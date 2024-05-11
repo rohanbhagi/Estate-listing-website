@@ -1,10 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { loading, error } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -16,7 +19,7 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signInStart());
       const res = await fetch('/api/auth/signin', {
         method:'POST',
         headers: {
@@ -28,17 +31,15 @@ export default function SignIn() {
       const data = await res.json();
 
       if (data.success === false) {
-        setLoading(false);
-        setError(data.message);
+        dispatch(signInFailure(data.message));
         return;
       }
 
-      setLoading(false);
-      setError(null);
+      dispatch(signInSuccess(data));
+      navigate('/');
     }
     catch(err) {
-      setError(err.message);
-      setLoading(false);
+      dispatch(signInFailure(err.message));
     }
   }
 
@@ -46,7 +47,6 @@ export default function SignIn() {
     <div className="mx-auto max-w-lg">
       <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
       <form className="flex flex-col gap-4" onSubmit={ handleSubmit }>
-        <input className="rounded-lg focus:outline-none p-3" type="text" placeholder="Username" id='userName' onChange={handleChange}/>
         <input className="rounded-lg focus:outline-none p-3" type="email" placeholder="Email" id='email' onChange={handleChange}/>
         <input className="rounded-lg focus:outline-none p-3" type="password" placeholder="Password" id='password' onChange={handleChange}/>
         <button disabled={ loading } className="rounded-lg uppercase hover:opacity-95 disabled:opacity-80 bg-slate-700 p-3 text-white">{ loading ? 'Loading...' : 'Sign in' }</button>
