@@ -27,7 +27,6 @@ export default function SignUp() {
       });
       
       const data = await res.json();
-      console.log(data);
       if (data.success === false) {
         setLoading(false);
         setError(data.message);
@@ -47,7 +46,7 @@ export default function SignUp() {
   return (
     <div className='max-w-lg mx-auto'>
       <h1 className="text-3xl font-semibold text-center my-7">Sign Up</h1>
-      <form className="flex flex-col  gap-4 my-4" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-4 my-4" onSubmit={handleSubmit}>
         <input className="p-3 focus:outline-none rounded-lg" type="text" placeholder="Username" id='userName' onChange={handleChange}/>
         <input className="p-3 focus:outline-none rounded-lg" type="email" placeholder="Email" id='email' onChange={handleChange}/>
         <input className="p-3 focus:outline-none rounded-lg" type="password" placeholder="Passowrd" id='password' onChange={handleChange} />
