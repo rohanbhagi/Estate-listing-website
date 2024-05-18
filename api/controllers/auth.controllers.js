@@ -44,7 +44,7 @@ export const google = async (req, res, next) => {
             res.cookie('access_token', token, { httpOnly: true }).status(200).json(userDetails);
         }
         else {
-            const generatedPassword = Math.random().toString(35).slice(-8);
+            const generatedPassword = Math.random().toString(36).slice(-8);
             const hashedPassword = bcrypt.hashSync(generatedPassword, await bcrypt.genSalt());
 
             const newUser = new User({
